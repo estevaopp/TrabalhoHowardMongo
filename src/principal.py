@@ -2,7 +2,7 @@ from utils import config
 from utils.splash_screen import SplashScreen
 from reports.relatorios import Relatorio
 from controller.controller_produto import Controller_Produto
-from controller.controller_cliente import Controller_Cliente
+from controller.controller_paciente import Controller_Paciente
 from controller.controller_fornecedor import Controller_Fornecedor
 from controller.controller_pedido import Controller_Pedido
 from controller.controller_item_pedido import Controller_Item_Pedido
@@ -10,7 +10,7 @@ from controller.controller_item_pedido import Controller_Item_Pedido
 tela_inicial = SplashScreen()
 relatorio = Relatorio()
 ctrl_produto = Controller_Produto()
-ctrl_cliente = Controller_Cliente()
+ctrl_paciente = Controller_Paciente()
 ctrl_fornecedor = Controller_Fornecedor()
 ctrl_pedido = Controller_Pedido()
 ctrl_item_pedido = Controller_Item_Pedido()
@@ -24,7 +24,7 @@ def reports(opcao_relatorio:int=0):
     elif opcao_relatorio == 3:
         relatorio.get_relatorio_produtos()
     elif opcao_relatorio == 4:
-        relatorio.get_relatorio_clientes()
+        relatorio.get_relatorio_pacientes()
     elif opcao_relatorio == 5:
         relatorio.get_relatorio_fornecedores()
     elif opcao_relatorio == 6:
@@ -35,7 +35,7 @@ def inserir(opcao_inserir:int=0):
     if opcao_inserir == 1:                               
         novo_produto = ctrl_produto.inserir_produto()
     elif opcao_inserir == 2:
-        novo_cliente = ctrl_cliente.inserir_cliente()
+        novo_paciente = ctrl_paciente.inserir_paciente()
     elif opcao_inserir == 3:
         novo_fornecedor = ctrl_fornecedor.inserir_fornecedor()
     elif opcao_inserir == 4:
@@ -49,8 +49,8 @@ def atualizar(opcao_atualizar:int=0):
         relatorio.get_relatorio_produtos()
         produto_atualizado = ctrl_produto.atualizar_produto()
     elif opcao_atualizar == 2:
-        relatorio.get_relatorio_clientes()
-        cliente_atualizado = ctrl_cliente.atualizar_cliente()
+        relatorio.get_relatorio_pacientes()
+        paciente_atualizado = ctrl_paciente.atualizar_paciente()
     elif opcao_atualizar == 3:
         relatorio.get_relatorio_fornecedores()
         fornecedor_atualizado = ctrl_fornecedor.atualizar_fornecedor()
@@ -67,8 +67,8 @@ def excluir(opcao_excluir:int=0):
         relatorio.get_relatorio_produtos()
         ctrl_produto.excluir_produto()
     elif opcao_excluir == 2:                
-        relatorio.get_relatorio_clientes()
-        ctrl_cliente.excluir_cliente()
+        relatorio.get_relatorio_pacientes()
+        ctrl_paciente.excluir_paciente()
     elif opcao_excluir == 3:                
         relatorio.get_relatorio_fornecedores()
         ctrl_fornecedor.excluir_fornecedor()

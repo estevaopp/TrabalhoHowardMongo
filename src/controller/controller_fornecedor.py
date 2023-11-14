@@ -105,11 +105,11 @@ class Controller_Fornecedor:
             # Cria uma nova conexão com o banco que permite alteração
             self.mongo.connect()
 
-        # Recupera os dados do novo cliente criado transformando em um DataFrame
-        df_cliente = pd.DataFrame(list(self.mongo.db["fornecedores"].find({"cnpj":f"{cnpj}"}, {"cnpj": 1, "razao_social": 1, "nome_fantasia": 1, "_id": 0})))
+        # Recupera os dados do novo fornecedor criado transformando em um DataFrame
+        df_fornecedor = pd.DataFrame(list(self.mongo.db["fornecedores"].find({"cnpj":f"{cnpj}"}, {"cnpj": 1, "razao_social": 1, "nome_fantasia": 1, "_id": 0})))
 
         if external:
             # Fecha a conexão com o Mongo
             self.mongo.close()
 
-        return df_cliente
+        return df_fornecedor

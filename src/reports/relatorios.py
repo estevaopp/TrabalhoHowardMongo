@@ -6,22 +6,22 @@ class Relatorio:
     def __init__(self):
         pass
 
-    def get_relatorio_clientes(self):
+    def get_relatorio_pacientes(self):
         # Cria uma nova conexão com o banco
         mongo = MongoQueries()
         mongo.connect()
         # Recupera os dados transformando em um DataFrame
-        query_result = mongo.db["clientes"].find({}, 
+        query_result = mongo.db["pacientes"].find({}, 
                                                  {"cpf": 1, 
                                                   "nome": 1, 
                                                   "_id": 0
                                                  }).sort("nome", ASCENDING)
-        df_cliente = pd.DataFrame(list(query_result))
+        df_paciente = pd.DataFrame(list(query_result))
         # Fecha a conexão com o mongo
         mongo.close()
         # Exibe o resultado
-        print(df_cliente)
-        input("Pressione Enter para Sair do Relatório de Clientes")
+        print(df_paciente)
+        input("Pressione Enter para Sair do Relatório de Pacientes")
 
     def get_relatorio_fornecedores(self):
         # Cria uma nova conexão com o banco
@@ -68,21 +68,21 @@ class Relatorio:
                                                         }
                                                     }, {
                                                         '$lookup': {
-                                                            'from': 'clientes', 
+                                                            'from': 'pacientes', 
                                                             'localField': 'cpf', 
                                                             'foreignField': 'cpf', 
-                                                            'as': 'cliente'
+                                                            'as': 'paciente'
                                                         }
                                                     }, {
                                                         '$unwind': {
-                                                            'path': '$cliente'
+                                                            'path': '$paciente'
                                                         }
                                                     }, {
                                                         '$project': {
                                                             'codigo_pedido': 1, 
                                                             'data_pedido': 1, 
                                                             'empresa': 1, 
-                                                            'cliente': '$cliente.nome', 
+                                                            'paciente': '$paciente.nome', 
                                                             '_id': 0
                                                         }
                                                     }, {
@@ -101,7 +101,7 @@ class Relatorio:
                                                             'codigo_pedido': 1, 
                                                             'data_pedido': 1, 
                                                             'empresa': 1, 
-                                                            'cliente': 1, 
+                                                            'paciente': 1, 
                                                             'item_pedido': '$item.codigo_item_pedido', 
                                                             'quantidade': '$item.quantidade', 
                                                             'valor_unitario': '$item.valor_unitario', 
@@ -129,7 +129,7 @@ class Relatorio:
                                                             'codigo_pedido': 1, 
                                                             'data_pedido': 1, 
                                                             'empresa': 1, 
-                                                            'cliente': 1, 
+                                                            'paciente': 1, 
                                                             'item_pedido': 1, 
                                                             'quantidade': 1, 
                                                             'valor_unitario': 1, 
@@ -139,7 +139,7 @@ class Relatorio:
                                                         }
                                                     }, {
                                                         '$sort': {
-                                                            'cliente': 1,
+                                                            'paciente': 1,
                                                             'item_pedido': 1
                                                         }
                                                     }
@@ -147,7 +147,7 @@ class Relatorio:
         df_pedido = pd.DataFrame(list(query_result))
         # Fecha a conexão com o Mongo
         mongo.close()
-        print(df_pedido[["codigo_pedido", "data_pedido", "cliente", "empresa", "item_pedido", "produto", "quantidade", "valor_unitario", "valor_total"]])
+        print(df_pedido[["codigo_pedido", "data_pedido", "paciente", "empresa", "item_pedido", "produto", "quantidade", "valor_unitario", "valor_total"]])
         input("Pressione Enter para Sair do Relatório de Pedidos")
     
     

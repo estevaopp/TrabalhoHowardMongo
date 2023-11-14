@@ -4,10 +4,10 @@ from bson import ObjectId
 from reports.relatorios import Relatorio
 
 from model.pedidos import Pedido
-from model.clientes import Cliente
+from model.pacientes import Paciente
 from model.fornecedores import Fornecedor
 
-from controller.controller_cliente import Controller_Cliente
+from controller.controller_paciente import Controller_Paciente
 from controller.controller_fornecedor import Controller_Fornecedor
 
 from conexion.mongo_queries import MongoQueries
@@ -15,7 +15,7 @@ from datetime import datetime
 
 class Controller_Pedido:
     def __init__(self):
-        self.ctrl_cliente = Controller_Cliente()
+        self.ctrl_paciente = Controller_Paciente()
         self.ctrl_fornecedor = Controller_Fornecedor()
         self.mongo = MongoQueries()
         self.relatorio = Relatorio()
@@ -24,11 +24,11 @@ class Controller_Pedido:
         # Cria uma nova conexão com o banco
         self.mongo.connect()
         
-        # Lista os clientes existentes para inserir no pedido
-        self.relatorio.get_relatorio_clientes()
-        cpf = str(input("Digite o número do CPF do Cliente: "))
-        cliente = self.valida_cliente(cpf)
-        if cliente == None:
+        # Lista os pacientes existentes para inserir no pedido
+        self.relatorio.get_relatorio_pacientes()
+        cpf = str(input("Digite o número do CPF do Paciente: "))
+        paciente = self.valida_paciente(cpf)
+        if paciente == None:
             return None
 
         # Lista os fornecedores existentes para inserir no pedido
@@ -61,13 +61,13 @@ class Controller_Pedido:
 
         proximo_pedido = int(list(proximo_pedido)[0]['proximo_pedido'])
         # Cria um dicionário para mapear as variáveis de entrada e saída
-        data = dict(codigo_pedido=proximo_pedido, data_pedido=data_hoje, cpf=cliente.get_CPF(), cnpj=fornecedor.get_CNPJ())
+        data = dict(codigo_pedido=proximo_pedido, data_pedido=data_hoje, cpf=paciente.get_CPF(), cnpj=fornecedor.get_CNPJ())
         # Insere e Recupera o código do novo pedido
         id_pedido = self.mongo.db["pedidos"].insert_one(data)
         # Recupera os dados do novo produto criado transformando em um DataFrame
         df_pedido = self.recupera_pedido(id_pedido.inserted_id)
         # Cria um novo objeto Produto
-        novo_pedido = Pedido(df_pedido.codigo_pedido.values[0], df_pedido.data_pedido.values[0], cliente, fornecedor)
+        novo_pedido = Pedido(df_pedido.codigo_pedido.values[0], df_pedido.data_pedido.values[0], paciente, fornecedor)
         # Exibe os atributos do novo produto
         print(novo_pedido.to_string())
         self.mongo.close()
@@ -84,11 +84,11 @@ class Controller_Pedido:
         # Verifica se o produto existe na base de dados
         if not self.verifica_existencia_pedido(codigo_pedido):
 
-            # Lista os clientes existentes para inserir no pedido
-            self.relatorio.get_relatorio_clientes()
-            cpf = str(input("Digite o número do CPF do Cliente: "))
-            cliente = self.valida_cliente(cpf)
-            if cliente == None:
+            # Lista os pacientes existentes para inserir no pedido
+            self.relatorio.get_relatorio_pacientes()
+            cpf = str(input("Digite o número do CPF do Paciente: "))
+            paciente = self.valida_paciente(cpf)
+            if paciente == None:
                 return None
 
             # Lista os fornecedores existentes para inserir no pedido
@@ -103,14 +103,14 @@ class Controller_Pedido:
             # Atualiza a descrição do produto existente
             self.mongo.db["pedidos"].update_one({"codigo_pedido": codigo_pedido}, 
                                                 {"$set": {"cnpj": f'{fornecedor.get_CNPJ()}',
-                                                          "cpf":  f'{cliente.get_CPF()}',
+                                                          "cpf":  f'{paciente.get_CPF()}',
                                                           "data_pedido": data_hoje
                                                           }
                                                 })
             # Recupera os dados do novo produto criado transformando em um DataFrame
             df_pedido = self.recupera_pedido_codigo(codigo_pedido)
             # Cria um novo objeto Produto
-            pedido_atualizado = Pedido(df_pedido.codigo_pedido.values[0], df_pedido.data_pedido.values[0], cliente, fornecedor)
+            pedido_atualizado = Pedido(df_pedido.codigo_pedido.values[0], df_pedido.data_pedido.values[0], paciente, fornecedor)
             # Exibe os atributos do novo produto
             print(pedido_atualizado.to_string())
             self.mongo.close()
@@ -132,7 +132,7 @@ class Controller_Pedido:
         if not self.verifica_existencia_pedido(codigo_pedido):            
             # Recupera os dados do novo produto criado transformando em um DataFrame
             df_pedido = self.recupera_pedido_codigo(codigo_pedido)
-            cliente = self.valida_cliente(df_pedido.cpf.values[0])
+            paciente = self.valida_paciente(df_pedido.cpf.values[0])
             fornecedor = self.valida_fornecedor(df_pedido.cnpj.values[0])
             
             opcao_excluir = input(f"Tem certeza que deseja excluir o pedido {codigo_pedido} [S ou N]: ")
@@ -145,7 +145,7 @@ class Controller_Pedido:
                     print("Itens do pedido removidos com sucesso!")
                     self.mongo.db["pedidos"].delete_one({"codigo_pedido": codigo_pedido})
                     # Cria um novo objeto Produto para informar que foi removido
-                    pedido_excluido = Pedido(df_pedido.codigo_pedido.values[0], df_pedido.data_pedido.values[0], cliente, fornecedor)
+                    pedido_excluido = Pedido(df_pedido.codigo_pedido.values[0], df_pedido.data_pedido.values[0], paciente, fornecedor)
                     self.mongo.close()
                     # Exibe os atributos do produto excluído
                     print("Pedido Removido com Sucesso!")
@@ -178,16 +178,16 @@ class Controller_Pedido:
 
         return df_pedido
 
-    def valida_cliente(self, cpf:str=None) -> Cliente:
-        if self.ctrl_cliente.verifica_existencia_cliente(cpf=cpf, external=True):
+    def valida_paciente(self, cpf:str=None) -> Paciente:
+        if self.ctrl_paciente.verifica_existencia_paciente(cpf=cpf, external=True):
             print(f"O CPF {cpf} informado não existe na base.")
             return None
         else:
-            # Recupera os dados do novo cliente criado transformando em um DataFrame
-            df_cliente = self.ctrl_cliente.recupera_cliente(cpf=cpf, external=True)
-            # Cria um novo objeto cliente
-            cliente = Cliente(df_cliente.cpf.values[0], df_cliente.nome.values[0])
-            return cliente
+            # Recupera os dados do novo paciente criado transformando em um DataFrame
+            df_paciente = self.ctrl_paciente.recupera_paciente(cpf=cpf, external=True)
+            # Cria um novo objeto paciente
+            paciente = Paciente(df_paciente.cpf.values[0], df_paciente.nome.values[0], df_paciente.telefone.values[0])
+            return paciente
 
     def valida_fornecedor(self, cnpj:str=None) -> Fornecedor:
         if self.ctrl_fornecedor.verifica_existencia_fornecedor(cnpj, external=True):
