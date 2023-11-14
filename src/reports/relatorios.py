@@ -14,6 +14,7 @@ class Relatorio:
         query_result = mongo.db["pacientes"].find({}, 
                                                  {"cpf": 1, 
                                                   "nome": 1, 
+                                                  "telefone": 1,
                                                   "_id": 0
                                                  }).sort("nome", ASCENDING)
         df_paciente = pd.DataFrame(list(query_result))

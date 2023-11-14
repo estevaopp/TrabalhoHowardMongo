@@ -47,7 +47,7 @@ class Controller_Paciente:
             novo_nome = input("Nome (Novo): ")
             novo_telefone = input("Telefone (Novo): ")
             # Atualiza o nome do paciente existente
-            self.mongo.db["pacientes"].update_one({"cpf": f"{cpf}"}, {"$set": {"nome": novo_nome}}, {"$set": {"telefone": novo_telefone}})
+            self.mongo.db["pacientes"].update_one({"cpf": f"{cpf}"}, {"$set": {"nome": novo_nome}, "$set": {"telefone": novo_telefone}})
             # Recupera os dados do novo paciente criado transformando em um DataFrame
             df_paciente = self.recupera_paciente(cpf)
             # Cria um novo objeto paciente
