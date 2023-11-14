@@ -1,8 +1,8 @@
 class Medico:
     def __init__(self, 
                  CRM:str=None,
+                 valor_consulta:float=None,
                  nome:str=None,
-                 valor_consulta:float=None
                  ):
         self.set_CRM(CRM)
         self.set_nome(nome)
