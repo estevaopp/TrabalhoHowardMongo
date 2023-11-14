@@ -14,10 +14,10 @@ class Controller_Medico:
         crm = input("CRM (Novo): ")
 
         if self.verifica_existencia_medico(crm):
-            # Solicita ao usuario a nova razão social
-            valor_consulta = float(input("Razão Social (Novo): "))
-            # Solicita ao usuario o novo nome fantasia
-            nome = input("Nome Fantasia (Novo): ")
+            # Solicita ao usuario a nova Valor Consulta
+            valor_consulta = float(input("Valor Consulta (Novo): "))
+            # Solicita ao usuario o novo nome
+            nome = input("Nome (Novo): ")
             # Insere e persiste o novo medico
             self.mongo.db["medicos"].insert_one({"crm": crm, "valor_consulta": valor_consulta, "nome": nome})
             # Recupera os dados do novo medico criado transformando em um DataFrame
@@ -43,10 +43,10 @@ class Controller_Medico:
 
         # Verifica se o medico existe na base de dados
         if not self.verifica_existencia_medico(crm):
-            # Solicita ao usuario a nova razão social
-            valor_consulta = float(input("Razão Social (Novo): "))
-            # Solicita ao usuario o novo nome fantasia
-            nome = input("Nome Fantasia (Novo): ")            
+            # Solicita ao usuario a nova Valor Consulta
+            valor_consulta = float(input("Valor Consulta (Novo): "))
+            # Solicita ao usuario o novo nome
+            nome = input("Nome (Novo): ")            
             # Atualiza o nome do medico existente
             self.mongo.db["medicos"].update_one({"crm":f"{crm}"},{"$set": {"valor_consulta":valor_consulta, "nome":nome}})
             # Recupera os dados do novo medico criado transformando em um DataFrame
