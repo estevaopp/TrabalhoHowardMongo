@@ -63,7 +63,7 @@ class Relatorio:
                                                         '$project': {
                                                             'codigo_agendamento': 1, 
                                                             'data_agendamento': 1, 
-                                                            'empresa': '$medico.nome', 
+                                                            'medico': '$medico.nome', 
                                                             'cpf': 1, 
                                                             '_id': 0
                                                         }
@@ -82,60 +82,8 @@ class Relatorio:
                                                         '$project': {
                                                             'codigo_agendamento': 1, 
                                                             'data_agendamento': 1, 
-                                                            'empresa': 1, 
+                                                            'medico': 1, 
                                                             'paciente': '$paciente.nome', 
-                                                            '_id': 0
-                                                        }
-                                                    }, {
-                                                        '$lookup': {
-                                                            'from': 'itens_agendamento', 
-                                                            'localField': 'codigo_agendamento', 
-                                                            'foreignField': 'codigo_agendamento', 
-                                                            'as': 'item'
-                                                        }
-                                                    }, {
-                                                        '$unwind': {
-                                                            'path': '$item', 'preserveNullAndEmptyArrays': True
-                                                        }
-                                                    }, {
-                                                        '$project': {
-                                                            'codigo_agendamento': 1, 
-                                                            'data_agendamento': 1, 
-                                                            'empresa': 1, 
-                                                            'paciente': 1, 
-                                                            'item_agendamento': '$item.codigo_item_agendamento', 
-                                                            'quantidade': '$item.quantidade', 
-                                                            'valor_unitario': '$item.valor_unitario', 
-                                                            'valor_total': {
-                                                                '$multiply': [
-                                                                    '$item.quantidade', '$item.valor_unitario'
-                                                                ]
-                                                            }, 
-                                                            'codigo_produto': '$item.codigo_produto', 
-                                                            '_id': 0
-                                                        }
-                                                    }, {
-                                                        '$lookup': {
-                                                            'from': 'produtos', 
-                                                            'localField': 'codigo_produto', 
-                                                            'foreignField': 'codigo_produto', 
-                                                            'as': 'produto'
-                                                        }
-                                                    }, {
-                                                        '$unwind': {
-                                                            'path': '$produto', 'preserveNullAndEmptyArrays': True
-                                                        }
-                                                    }, {
-                                                        '$project': {
-                                                            'codigo_agendamento': 1, 
-                                                            'data_agendamento': 1, 
-                                                            'empresa': 1, 
-                                                            'paciente': 1, 
-                                                            'item_agendamento': 1, 
-                                                            'quantidade': 1, 
-                                                            'valor_unitario': 1, 
-                                                            'valor_total': 1, 
-                                                            'produto': '$produto.descricao_produto', 
                                                             '_id': 0
                                                         }
                                                     }, {
@@ -148,7 +96,7 @@ class Relatorio:
         df_agendamento = pd.DataFrame(list(query_result))
         # Fecha a conexão com o Mongo
         mongo.close()
-        print(df_agendamento[["codigo_agendamento", "data_agendamento", "paciente", "empresa", "item_agendamento", "produto", "quantidade", "valor_unitario", "valor_total"]])
+        print(df_agendamento[["codigo_agendamento", "data_agendamento", "paciente", "empresa"]])
         input("Pressione Enter para Sair do Relatório de Agendamento")
     
     
