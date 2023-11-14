@@ -22,7 +22,7 @@ class OracleQueries:
         self.service_name = 'XEPDB1'
         self.sid = 'XE'
 
-        with open("conexion/passphrase/authentication.oracle", "r") as f:
+        with open("/home/labdatabase/GitHub/TrabalhoHowardMongo/src/conexion/passphrase/authentication.oracle", "r") as f:
             self.user, self.passwd = f.read().split(',')            
 
     def __del__(self):
