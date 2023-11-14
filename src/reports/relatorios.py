@@ -96,7 +96,7 @@ class Relatorio:
         df_agendamento = pd.DataFrame(list(query_result))
         # Fecha a conexão com o Mongo
         mongo.close()
-        print(df_agendamento[["codigo_agendamento", "data_agendamento", "paciente", "empresa"]])
+        print(df_agendamento[["codigo_agendamento", "data_agendamento", "paciente", "medico"]])
         input("Pressione Enter para Sair do Relatório de Agendamento")
     
     
