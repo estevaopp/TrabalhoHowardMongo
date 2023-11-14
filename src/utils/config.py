@@ -7,10 +7,9 @@ MENU_PRINCIPAL = """Menu Principal
 """
 
 MENU_RELATORIOS = """Relatórios
-1 - Relatório de Agendamentos por Paciente
-2 - Relatório de Agendamentos
-3 - Relatório de Pacientes
-4 - Relatório de Medicos
+1 - Relatório de Agendamentos
+2 - Relatório de Pacientes
+3 - Relatório de Medicos
 0 - Sair
 """
 
